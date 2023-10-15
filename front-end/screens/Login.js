@@ -12,8 +12,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-
 import { auth } from "../firebase";
+import { CommonActions } from "@react-navigation/routers";
 
 import { LoginStyle } from "../styles/style";
 
@@ -27,10 +27,16 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.dispatch(
+          CommonActions.navigate({
+            name: "NavBarPages",
+            params: {
+              screen: "Home",
+            },
+          })
+        );
       }
     });
-
     return unsubscribe;
   }, []);
 
@@ -60,6 +66,7 @@ const Login = () => {
           placeholder="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
+          autoCapitalize="none"
           style={LoginStyle.input}
         />
         <TextInput

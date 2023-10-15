@@ -1,5 +1,5 @@
 // dependencies
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
 
@@ -10,7 +10,9 @@ const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View style={WelcomeStyle.container}>
-      <Text>Text</Text>
+      <Text style={WelcomeStyle.title}>
+        Something other than scrolling...
+      </Text>
       <View style={WelcomeStyle.buttonContainer}>
         <TouchableOpacity
           style={WelcomeStyle.button}

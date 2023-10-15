@@ -10,3 +10,9 @@ export const colors = {
   grayTwo: "#A9A9A9",
   grayThree: "#6F6F6F"
 };
+
+export const dimensions = {
+  buttonRadius: 20,
+  buttonHeight: 55,
+  buttonSetGap: 15,
+}
