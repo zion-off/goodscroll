@@ -10,6 +10,9 @@ import { loadFonts } from "./styles/style";
 
 // screens
 import Welcome from "./screens/Welcome";
+import Register from "./screens/Register";
+import Onboarding from "./screens/Onboarding";
+import Instructions from "./screens/Instructions";
 import Login from "./screens/Login";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
@@ -45,6 +48,21 @@ export default function App() {
           options={{ headerShown: false }}
           name="Welcome"
           component={Welcome}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Register"
+          component={Register}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Onboarding"
+          component={Onboarding}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Instructions"
+          component={Instructions}
         />
         <Stack.Screen
           options={{ headerShown: false }}

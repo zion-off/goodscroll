@@ -1,6 +1,5 @@
 import {
   KeyboardAvoidingView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -9,7 +8,6 @@ import {
 import { useNavigation } from '@react-navigation/core';
 import React, { useState, useEffect } from "react";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase";
@@ -40,15 +38,7 @@ const Login = () => {
     return unsubscribe;
   }, []);
 
-  // authentication functions
-  const handleSignup = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Registered with: ", user.email);
-      })
-      .catch((error) => alert(error.message));
-  };
+  // authentication function
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password).then(
       (userCredentials) => {
@@ -81,9 +71,6 @@ const Login = () => {
       <View style={LoginStyle.buttonContainer}>
         <TouchableOpacity onPress={handleLogin} style={LoginStyle.button}>
           <Text style={LoginStyle.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleSignup} style={LoginStyle.button}>
-          <Text style={LoginStyle.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

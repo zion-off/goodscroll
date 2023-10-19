@@ -10,16 +10,16 @@ const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View style={WelcomeStyle.container}>
-      <Text style={WelcomeStyle.title}>
-        Something other than scrolling...
-      </Text>
+      <Text style={WelcomeStyle.title}>Something other than scrolling...</Text>
       <View style={WelcomeStyle.buttonContainer}>
         <TouchableOpacity
           style={WelcomeStyle.button}
           onPress={() => navigation.navigate("Login")}>
           <Text style={WelcomeStyle.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={WelcomeStyle.button}>
+        <TouchableOpacity
+          style={WelcomeStyle.button}
+          onPress={() => navigation.navigate("Register")}>
           <Text style={WelcomeStyle.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
