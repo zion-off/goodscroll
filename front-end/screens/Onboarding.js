@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import { auth, database } from "../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 import { OnboardingStyle } from "../styles/style";
 
 const Onboarding = () => {
   const navigation = useNavigation();
   const [selectedApps, setSelectedApps] = useState([]);
+  const currentUser = auth.currentUser;
 
   const handleAppPress = (appName) => {
     if (selectedApps.includes(appName)) {
@@ -14,6 +17,14 @@ const Onboarding = () => {
     } else {
       setSelectedApps([...selectedApps, appName]);
     }
+  };
+
+  const saveSelectedApps = async (userId, selectedApps) => {
+    const userDocRef = doc(database, "apps", userId);
+    await setDoc(userDocRef, {
+      selectedApps: selectedApps,
+    }, { merge: true });
+    console.log("Selected apps saved successfully");
   };
 
   return (
@@ -61,7 +72,12 @@ const Onboarding = () => {
       </View>
       {selectedApps.length > 0 && (
         <View style={OnboardingStyle.proceedButton}>
-          <TouchableOpacity onPress={() => navigation.navigate("Instructions")}>
+          <TouchableOpacity
+            onPress={() => {
+              const userId = currentUser.uid;
+              saveSelectedApps(userId, selectedApps);
+              navigation.navigate("Instructions");
+            }}>
             <Text style={OnboardingStyle.appText}>Next</Text>
           </TouchableOpacity>
         </View>
