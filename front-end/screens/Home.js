@@ -13,7 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
   const navigation = useNavigation();
-  const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
@@ -26,13 +25,21 @@ const Home = () => {
     scopes: ["https://www.googleapis.com/auth/calendar"],
   });
 
-  // when loginResponse changes, check if it is a success and store the token
-  const getAccessToken = async () => {
-    if (loginResponse?.type === "success") {
-      setToken(loginResponse.authentication.accessToken);
-      getUserInfo();
+  // save the access token to AsyncStorage
+  const getAccessToken = () => {
+    try {
+      const token = loginResponse?.authentication?.accessToken;
+
+      if (token) {
+        AsyncStorage.setItem("userToken", token);
+        getUserInfo();
+      }
+    } catch (error) {
+      console.error("getAccessToken returned an error: ", error);
     }
   };
+
+  // when loginResponse changes, get the access token
   useEffect(() => {
     getAccessToken();
   }, [loginResponse]);
@@ -40,6 +47,7 @@ const Home = () => {
   // helper function to print user details to verify login
   const getUserInfo = async () => {
     try {
+      const token = await AsyncStorage.getItem("userToken");
       const response = await fetch(
         "https://www.googleapis.com/userinfo/v2/me",
         {
@@ -49,13 +57,14 @@ const Home = () => {
       const user = await response.json();
       setUserInfo(user);
     } catch (error) {
-      console.log(error);
+      console.log("getUserInfo returned an error: ", error);
     }
   };
 
   // get all the calendars the user has access to
   const getUsersCalendarList = async () => {
     try {
+      const token = await AsyncStorage.getItem("userToken");
       let calendarsList = await fetch(
         "https://www.googleapis.com/calendar/v3/users/me/calendarList",
         {
@@ -74,33 +83,36 @@ const Home = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        const token = await AsyncStorage.getItem("userToken");
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
 
+        const timeMin = today.toISOString();
+        const timeMax = tomorrow.toISOString();
+
         let eventsList = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/`,
+          `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/?timeMin=${timeMin}&timeMax=${timeMax}`,
           {
             headers: { Authorization: `Bearer ${token}` },
-            scopes: ["https://www.googleapis.com/auth/calendar"],
-            timeMin: today.toISOString(),
-            timeMax: tomorrow.toISOString(),
           }
         );
         const response = await eventsList.json();
-        console.log(response);
+        const summaries = response?.items?.map((item) => item.summary);
+        console.log("Event Summaries:", summaries);
         setEventsList(response.items);
       } catch (error) {
         console.error("An error occurred: ", error);
       }
     };
     fetchEvents();
-  }, [calendarsList]);
+  }, [selectedCalendarId]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Welcome to Goodscroll!</Text>
+      <Text style={styles.title}>home page</Text>
       <ScrollView>
         <Text>{JSON.stringify(userInfo, null, 2)}</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Onboarding")}>
