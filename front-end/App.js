@@ -1,3 +1,6 @@
+// ios client ID
+// 1085053377250-ikuv6tn9p3g1riofsp5ov5ucpdg51mof.apps.googleusercontent.com
+
 // dependencies
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
