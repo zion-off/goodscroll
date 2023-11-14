@@ -74,5 +74,11 @@
     <string>Light</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>twitter</string>
+    <string>tiktok</string>
+    <string>instagram</string>
+</array>
   </dict>
 </plist>

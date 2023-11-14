@@ -6,17 +6,49 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth, database } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import * as Linking from "expo-linking";
 
 const Home = () => {
+  const currentUser = auth.currentUser;
+  const [apps, setApps] = useState([]);
+
   const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState(null);
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [eventsList, setEventsList] = useState(null);
+
+  const createOneButtonAlert = (appName) => {
+    Alert.alert(`${appName} is not installed`, [
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
+  };
+
+  // get list of apps from database
+
+  useEffect(() => {
+    const getAppsList = async () => {
+      const userDocRef = doc(database, "apps", currentUser.uid);
+      try {
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          setApps(docSnap.data().selectedApps);
+          // print list of apps
+          console.log(apps);
+        }
+      } catch (error) {
+        console.log("Error getting apps list: ", error);
+      }
+    };
+    getAppsList();
+  }, [currentUser]);
 
   // user presses the button to log in with Google, and is redirected to Google's login page
   const [loginRequest, loginResponse, loginPrompt] = Google.useAuthRequest({
@@ -29,9 +61,11 @@ const Home = () => {
   const getAccessToken = () => {
     try {
       const token = loginResponse?.authentication?.accessToken;
+      const refreshToken = loginResponse?.authentication?.refreshToken;
 
       if (token) {
         AsyncStorage.setItem("userToken", token);
+        AsyncStorage.setItem("refreshToken", refreshToken);
         getUserInfo();
       }
     } catch (error) {
@@ -110,6 +144,92 @@ const Home = () => {
     fetchEvents();
   }, [selectedCalendarId]);
 
+  /// test
+
+  // Check if the access token is expired
+  const isTokenExpired = () => {
+    const expirationTime =
+      loginResponse?.authentication?.accessTokenExpirationDate;
+    return expirationTime && expirationTime < new Date();
+  };
+
+  // Refresh the access token using the refresh token
+  const refreshAccessToken = async () => {
+    try {
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
+      const iosClientId =
+        "1085053377250-ikuv6tn9p3g1riofsp5ov5ucpdg51mof.apps.googleusercontent.com"; // Replace with your iOS client ID
+      const response = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `client_id=${iosClientId}&refresh_token=${refreshToken}&grant_type=refresh_token`,
+      });
+
+      const data = await response.json();
+
+      if (data.access_token) {
+        const newTokenExpirationDate = new Date();
+        newTokenExpirationDate.setSeconds(
+          newTokenExpirationDate.getSeconds() + data.expires_in
+        );
+
+        // Save the new access token and expiration date
+        await AsyncStorage.setItem("userToken", data.access_token);
+        await AsyncStorage.setItem(
+          "tokenExpiration",
+          newTokenExpirationDate.toISOString()
+        );
+      }
+    } catch (error) {
+      console.error("Error refreshing access token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const checkTokenExpiration = async () => {
+      if (isTokenExpired()) {
+        await refreshAccessToken();
+      }
+    };
+
+    checkTokenExpiration();
+  }, [loginResponse]);
+
+  // test end
+
+  // app name to url mapping
+  const appToUrl = async (appName) => {
+    let appUrl = "";
+    switch (appName) {
+      case "Twitter":
+        appUrl = `twitter://`;
+        break;
+      case "TikTok":
+        appUrl = `tiktok://`;
+        break;
+      case "Instagram":
+        appUrl = `instagram://`;
+        break;
+      default:
+        break;
+    }
+
+    return appUrl;
+
+    try {
+      const supported = await Linking.canOpenURL(appUrl);
+      if (supported) {
+        console.log("Opening app: ", appUrl);
+        return appUrl;
+      }
+    } catch (error) {
+      createOneButtonAlert(appName);
+      return "";
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>home page</Text>
@@ -134,6 +254,31 @@ const Home = () => {
           </TouchableOpacity>
         ))}
         <Text>Selected Calendar ID: {selectedCalendarId}</Text>
+        <Text>Apps the user wants to use less</Text>
+        {apps?.map((index) => (
+          <TouchableOpacity
+            style={{ padding: 10, borderWidth: 1, marginBottom: 5 }}
+            key={index}
+            onPress={async () => {
+              try {
+                console.log("index: ", index);
+                const supported = await Linking.canOpenURL(
+                  await appToUrl(index)
+                );
+                console.log("app url: ", await appToUrl(index));
+                if (supported) {
+                  console.log("Opening app: ", appUrl);
+                  Linking.openURL(await appToUrl(index));
+                } else {
+                  createOneButtonAlert(index);
+                }
+              } catch (error) {
+                console.log("Error opening app: ", error);
+              }
+            }}>
+            <Text>{index}</Text>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
