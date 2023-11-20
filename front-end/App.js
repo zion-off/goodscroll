@@ -2,8 +2,8 @@
 // 1085053377250-ikuv6tn9p3g1riofsp5ov5ucpdg51mof.apps.googleusercontent.com
 
 // dependencies
-import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Text, AppRegistry, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
@@ -19,6 +19,7 @@ import Instructions from "./screens/Instructions";
 import Login from "./screens/Login";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
+import Timer from "./screens/Timer";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -72,9 +73,14 @@ export default function App() {
           name="Login"
           component={Login}
         />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Timer"
+          component={Timer}
+        />
         <Stack.Screen options={{ headerShown: false }} name="NavBarPages">
           {() => (
-            <Tab.Navigator >
+            <Tab.Navigator>
               <Tab.Screen name="Home" component={Home} />
               <Tab.Screen name="Profile" component={Profile} />
             </Tab.Navigator>

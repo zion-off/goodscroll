@@ -48,7 +48,7 @@ const Home = () => {
       }
     };
     getAppsList();
-  }, [currentUser]);
+  }, []);
 
   // user presses the button to log in with Google, and is redirected to Google's login page
   const [loginRequest, loginResponse, loginPrompt] = Google.useAuthRequest({
@@ -199,37 +199,6 @@ const Home = () => {
 
   // test end
 
-  // app name to url mapping
-  const appToUrl = async (appName) => {
-    let appUrl = "";
-    switch (appName) {
-      case "Twitter":
-        appUrl = `twitter://`;
-        break;
-      case "TikTok":
-        appUrl = `tiktok://`;
-        break;
-      case "Instagram":
-        appUrl = `instagram://`;
-        break;
-      default:
-        break;
-    }
-
-    return appUrl;
-
-    try {
-      const supported = await Linking.canOpenURL(appUrl);
-      if (supported) {
-        console.log("Opening app: ", appUrl);
-        return appUrl;
-      }
-    } catch (error) {
-      createOneButtonAlert(appName);
-      return "";
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>home page</Text>
@@ -260,21 +229,8 @@ const Home = () => {
             style={{ padding: 10, borderWidth: 1, marginBottom: 5 }}
             key={index}
             onPress={async () => {
-              try {
-                console.log("index: ", index);
-                const supported = await Linking.canOpenURL(
-                  await appToUrl(index)
-                );
-                console.log("app url: ", await appToUrl(index));
-                if (supported) {
-                  console.log("Opening app: ", appUrl);
-                  Linking.openURL(await appToUrl(index));
-                } else {
-                  createOneButtonAlert(index);
-                }
-              } catch (error) {
-                console.log("Error opening app: ", error);
-              }
+              // await appToUrl(index);
+              navigation.navigate("Timer", { appName: index });
             }}>
             <Text>{index}</Text>
           </TouchableOpacity>
