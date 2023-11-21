@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/core";
 import {
   Text,
@@ -25,30 +26,29 @@ const Home = () => {
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [eventsList, setEventsList] = useState(null);
 
-  const createOneButtonAlert = (appName) => {
-    Alert.alert(`${appName} is not installed`, [
-      { text: "OK", onPress: () => console.log("OK Pressed") },
-    ]);
-  };
+  
 
   // get list of apps from database
 
-  useEffect(() => {
-    const getAppsList = async () => {
-      const userDocRef = doc(database, "apps", currentUser.uid);
-      try {
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setApps(docSnap.data().selectedApps);
-          // print list of apps
-          console.log(apps);
-        }
-      } catch (error) {
-        console.log("Error getting apps list: ", error);
+  const getAppsList = async () => {
+    const userDocRef = doc(database, "apps", currentUser.uid);
+    try {
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        setApps(docSnap.data().selectedApps);
+        // print list of apps
+        console.log(apps);
       }
-    };
-    getAppsList();
-  }, []);
+    } catch (error) {
+      console.log("Error getting apps list: ", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getAppsList();
+    }, [])
+  );
 
   // user presses the button to log in with Google, and is redirected to Google's login page
   const [loginRequest, loginResponse, loginPrompt] = Google.useAuthRequest({

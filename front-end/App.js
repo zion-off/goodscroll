@@ -20,6 +20,7 @@ import Login from "./screens/Login";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Timer from "./screens/Timer";
+import Streak from "./screens/Streak";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -77,6 +78,11 @@ export default function App() {
           options={{ headerShown: false }}
           name="Timer"
           component={Timer}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Streak"
+          component={Streak}
         />
         <Stack.Screen options={{ headerShown: false }} name="NavBarPages">
           {() => (

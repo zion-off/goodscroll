@@ -19,8 +19,11 @@
     "@react-navigation/native-stack": "^6.9.13",
     "expo": "~49.0.8",
     "expo-auth-session": "^5.2.0",
+    "expo-constants": "~14.4.2",
     "expo-dev-client": "^2.4.11",
+    "expo-device": "~5.4.0",
     "expo-font": "~11.4.0",
+    "expo-notifications": "~0.20.1",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "expo-web-browser": "^12.5.0",
@@ -36,9 +39,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-simple-time-picker": "^1.3.11",
     "react-native-vector-icons": "^10.0.0",
-    "expo-notifications": "~0.20.1",
-    "expo-device": "~5.4.0",
-    "expo-constants": "~14.4.2"
+    "react-router-dom": "^6.19.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
