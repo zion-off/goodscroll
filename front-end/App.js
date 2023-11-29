@@ -2,11 +2,17 @@
 // 1085053377250-ikuv6tn9p3g1riofsp5ov5ucpdg51mof.apps.googleusercontent.com
 
 // dependencies
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, AppRegistry, Platform } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Dimensions } from "react-native";
+import {
+  NavigationContainer,
+  useNavigationState,
+  getFocusedRouteNameFromRoute,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Provider as PaperProvider } from "react-native-paper";
 
 // custom dependencies
 import { loadFonts } from "./styles/style";
@@ -24,6 +30,64 @@ import Streak from "./screens/Streak";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
+
+const tabBarTheme = {
+  colors: {
+    secondaryContainer: "#6482B4",
+    primaryContainer: "transparent",
+  },
+};
+
+function NavBarPages({ navigation, route }) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
+
+  const getTabBarIconColor = (tabName) => {
+    return tabName === routeName ? "white" : "#123C6E"; // Change colors as needed
+  };
+
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
+  return (
+    <PaperProvider theme={tabBarTheme}>
+      <Tab.Navigator
+        labeled={false}
+        shifting={true}
+        barStyle={{
+          position: "absolute",
+          backgroundColor: "#6482B4",
+          height: windowHeight * 0.1,
+        }}>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: () => (
+              <MaterialCommunityIcons
+                name="home"
+                size={25}
+                color={getTabBarIconColor("Home")}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: () => (
+              <MaterialCommunityIcons
+                name="account"
+                size={25}
+                color={getTabBarIconColor("Profile")}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </PaperProvider>
+  );
+}
 
 export default function App() {
   // load fonts
@@ -84,14 +148,11 @@ export default function App() {
           name="Streak"
           component={Streak}
         />
-        <Stack.Screen options={{ headerShown: false }} name="NavBarPages">
-          {() => (
-            <Tab.Navigator>
-              <Tab.Screen name="Home" component={Home} />
-              <Tab.Screen name="Profile" component={Profile} />
-            </Tab.Navigator>
-          )}
-        </Stack.Screen>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="NavBarPages"
+          component={NavBarPages}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

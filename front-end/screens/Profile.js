@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
@@ -9,7 +9,8 @@ const auth = getAuth();
 const Profile = () => {
   const navigation = useNavigation();
   const [newEmail, setNewEmail] = useState("");
-  const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   const signOutUser = async (navigation) => {
     try {
@@ -40,10 +41,20 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchDisplayName = async () => {
+      const user = auth.currentUser;
+      if (user && user.displayName) {
+        setDisplayName(user.displayName);
+        console.log("user's name: ", user.displayName)
+      }
+    };
+    fetchDisplayName();
+  }, []);
+
   return (
     <View style={ProfileStyle.container}>
-      <Text style={ProfileStyle.title}>Profile screen for testing</Text>
-      <Text style={ProfileStyle.subtitle}>Welcome to your profile!</Text>
+      <Text style={ProfileStyle.title}>Hello, {displayName}!</Text>
       <View style={ProfileStyle.inputContainer}>
         <TextInput
           style={ProfileStyle.input}

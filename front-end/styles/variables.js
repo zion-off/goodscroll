@@ -16,3 +16,7 @@ export const dimensions = {
   buttonHeight: 55,
   buttonSetGap: 15,
 }
+
+export const text = {
+  button: 14,
+}

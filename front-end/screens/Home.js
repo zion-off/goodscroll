@@ -3,11 +3,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/core";
 import {
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
   Alert,
+  Image,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
@@ -15,6 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth, database } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import * as Linking from "expo-linking";
+
+import { HomeStyle } from "../styles/style";
 
 const Home = () => {
   const currentUser = auth.currentUser;
@@ -25,8 +27,6 @@ const Home = () => {
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [eventsList, setEventsList] = useState(null);
-
-  
 
   // get list of apps from database
 
@@ -199,10 +199,32 @@ const Home = () => {
 
   // test end
 
+  const appIcon = (appName) => {
+    if (appName === "Instagram") {
+      return (
+        <Image
+          style={HomeStyle.appIcon}
+          source={require("../assets/icons/twitter.png")}></Image>
+      );
+    } else if (appName === "Twitter") {
+      return (
+        <Image
+          style={HomeStyle.appIcon}
+          source={require("../assets/icons/instagram.png")}></Image>
+      );
+    } else if (appName === "TikTok") {
+      return (
+        <Image
+          style={HomeStyle.appIcon}
+          source={require("../assets/icons/tiktok.png")}></Image>
+      );
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>home page</Text>
-      <ScrollView>
+    <SafeAreaView style={HomeStyle.container}>
+      <Text style={HomeStyle.title}>home page</Text>
+      <ScrollView style={HomeStyle.subContainer}>
         <Text>{JSON.stringify(userInfo, null, 2)}</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Onboarding")}>
           <Text>Navigate to onboarding page</Text>
@@ -223,40 +245,21 @@ const Home = () => {
           </TouchableOpacity>
         ))}
         <Text>Selected Calendar ID: {selectedCalendarId}</Text>
-        <Text>Apps the user wants to use less</Text>
-        {apps?.map((index) => (
-          <TouchableOpacity
-            style={{ padding: 10, borderWidth: 1, marginBottom: 5 }}
-            key={index}
-            onPress={async () => {
-              // await appToUrl(index);
-              navigation.navigate("Timer", { appName: index });
-            }}>
-            <Text>{index}</Text>
-          </TouchableOpacity>
-        ))}
+        <SafeAreaView style={HomeStyle.appContainer}>
+          {apps?.map((index) => (
+            <TouchableOpacity
+              style={HomeStyle.appButton}
+              key={index}
+              onPress={async () => {
+                navigation.navigate("Timer", { appName: index });
+              }}>
+              {appIcon(index)}
+            </TouchableOpacity>
+          ))}
+        </SafeAreaView>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "#666",
-  },
-});
 
 export default Home;

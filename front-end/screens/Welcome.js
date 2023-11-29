@@ -10,7 +10,7 @@ const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View style={WelcomeStyle.container}>
-      <Text style={WelcomeStyle.title}>Something other than scrolling...</Text>
+      <Text style={WelcomeStyle.title}>Scrolling, but make it good.</Text>
       <View style={WelcomeStyle.buttonContainer}>
         <TouchableOpacity
           style={WelcomeStyle.button}

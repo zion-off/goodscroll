@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import * as Font from "expo-font";
-import { colors, dimensions } from "./variables";
+import { colors, dimensions, text } from "./variables";
 
 const customFonts = {
   SportingGrotesqueRegular: require("../assets/fonts/SportingGrotesque-Regular.otf"),
@@ -20,7 +20,7 @@ export const WelcomeStyle = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.yellowTwo,
-    gap: 250,
+    gap: 300,
   },
   title: {
     fontFamily: "SportingGrotesqueBold",
@@ -38,7 +38,6 @@ export const WelcomeStyle = StyleSheet.create({
     gap: dimensions.buttonSetGap,
   },
   button: {
-    fontFamily: "SportingGrotesqueRegular",
     backgroundColor: colors.white,
     width: "100%",
     height: dimensions.buttonHeight,
@@ -48,6 +47,10 @@ export const WelcomeStyle = StyleSheet.create({
     borderColor: "black",
     borderTopWidth: 3,
     borderRightWidth: 3,
+  },
+  buttonText: {
+    fontFamily: "VioletSansRegular",
+    fontSize: text.button,
   },
 });
 
@@ -66,7 +69,7 @@ export const RegisterStyle = StyleSheet.create({
     fontSize: 24,
   },
   inputContainer: {
-    gap: 10,
+    gap: dimensions.buttonSetGap,
   },
   input: {
     backgroundColor: colors.grayOne,
@@ -82,6 +85,13 @@ export const RegisterStyle = StyleSheet.create({
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
+  },
+  buttonText: {
+    fontFamily: "VioletSansRegular",
+  },
+  loading: {
+    height: dimensions.buttonHeight * 0.6,
+    width: dimensions.buttonHeight * 0.6,
   },
 });
 
@@ -171,9 +181,16 @@ export const LoginStyle = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  incorrectText: {
+    fontFamily: "VioletSansRegular",
+    color: colors.red,
+    paddingBottom: 40,
+    textAlign: "left",
+    width: "80%",
+  },
   inputContainer: {
     width: "80%",
-    gap: 5,
+    gap: dimensions.buttonSetGap,
   },
   input: {
     height: dimensions.buttonHeight,
@@ -187,14 +204,56 @@ export const LoginStyle = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 40,
-    gap: 10,
   },
   button: {
+    height: dimensions.buttonHeight,
     backgroundColor: colors.yellowTwo,
     width: "100%",
     padding: 15,
     borderRadius: dimensions.buttonRadius,
     alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    fontFamily: "VioletSansRegular",
+    fontSize: text.button,
+  },
+  loading: {
+    height: dimensions.buttonHeight * 0.6,
+    width: dimensions.buttonHeight * 0.6,
+  },
+});
+
+export const HomeStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    width: "100%",
+  },
+  subContainer: {
+    width: "90%",
+    gap: 20,
+  },
+  appContainer: {
+    width: "100%",
+    backgroundColor: colors.grayOne,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    gap: 20,
+    flexWrap: 'wrap',
+    borderRadius: 20,
+    flexDirection: 'row',
+  },
+  appButton: {
+    padding: 10,
+    marginBottom: 5,
+  },
+  appIcon: {
+    width: 40,
+    height: 40,
+    resizeMode: "cover",
   },
 });
 

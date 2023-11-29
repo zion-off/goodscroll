@@ -4,12 +4,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from "@react-navigation/core";
 import React, { useState, useEffect } from "react";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { CommonActions } from "@react-navigation/routers";
 
@@ -19,6 +18,8 @@ const Login = () => {
   // state variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [incorrect, setIncorrect] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // check for logged in state
   const navigation = useNavigation();
@@ -40,17 +41,41 @@ const Login = () => {
 
   // authentication function
   const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password).then(
-      (userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Logged in with: ", user.email);
-      }
-    );
+    try {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredentials) => {
+          const user = userCredentials.user;
+          console.log("Logged in with: ", user.email);
+          setIncorrect(false);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (error.code === "auth/invalid-email") {
+            console.log("Invalid email format");
+            setLoading(false);
+            setIncorrect(true);
+          } else {
+            setLoading(false);
+            console.log(error);
+            setIncorrect(true);
+          }
+        });
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      setIncorrect(true);
+    }
   };
 
   // Login page
   return (
     <KeyboardAvoidingView style={LoginStyle.container} behavior="padding">
+      {incorrect && (
+        <Text style={LoginStyle.incorrectText}>
+          Incorrect email or password, try again!
+        </Text>
+      )}
+
       <View style={LoginStyle.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -69,8 +94,20 @@ const Login = () => {
       </View>
 
       <View style={LoginStyle.buttonContainer}>
-        <TouchableOpacity onPress={handleLogin} style={LoginStyle.button}>
-          <Text style={LoginStyle.buttonText}>Login</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setLoading(true);
+            setIncorrect(false);
+            handleLogin();
+          }}
+          style={LoginStyle.button}>
+          {loading ? (
+             <Image
+             style={LoginStyle.loading}
+             source={require("../assets/images/loading.gif")}></Image>
+          ) : (
+            <Text style={LoginStyle.buttonText}>Login</Text>
+          )}
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
