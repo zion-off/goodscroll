@@ -23,6 +23,8 @@ import {
   cancelScheduledNotificationAsync,
 } from "expo-notifications";
 
+import { TimerStyle } from "../styles/style";
+
 Notification.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -91,7 +93,7 @@ async function registerForPushNotificationsAsync() {
 const Timer = () => {
   const route = useRoute();
   const { appName } = route.params;
-  const [selectedMinutes, setSelectedMinutes] = useState(0);
+  const [selectedMinutes, setSelectedMinutes] = useState(5);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
@@ -146,7 +148,10 @@ const Timer = () => {
     const notificationContent = {
       title: "reminder",
       body: `close ${appName} in 5 minutes`,
-      data: { timestamp: new Date().getTime(), selectedMinutes: selectedMinutes },
+      data: {
+        timestamp: new Date().getTime(),
+        selectedMinutes: selectedMinutes,
+      },
     };
 
     // Schedule the notification and store its identifier
@@ -243,7 +248,8 @@ const Timer = () => {
 
         const date = new Date(notificationTime);
 
-        const minutes = response.notification.request.content.data.selectedMinutes;
+        const minutes =
+          response.notification.request.content.data.selectedMinutes;
 
         console.log("Timestamp from notification data:", date);
 
@@ -269,8 +275,14 @@ const Timer = () => {
   }, []);
 
   return (
-    <SafeAreaView>
-      <Text>Timer</Text>
+    <SafeAreaView style={TimerStyle.container}>
+      <View style={TimerStyle.textContainer}>
+        <Text style={TimerStyle.text}>
+          Open Goodscroll before {selectedMinutes} minutes to count towards your
+          streak!
+        </Text>
+      </View>
+
       <Picker
         selectedValue={selectedMinutes}
         onValueChange={(itemValue) => setSelectedMinutes(itemValue)}>
@@ -278,15 +290,12 @@ const Timer = () => {
           <Picker.Item key={minute} label={`${minute}`} value={minute} />
         ))}
       </Picker>
-      <Text>
-        Open Goodscroll before {selectedMinutes} minutes to count towards your
-        streak!
-      </Text>
       <TouchableOpacity
+        style={TimerStyle.proceedButton}
         onPress={async () => {
           await appToUrl(appName);
         }}>
-        <Text>Launch {appName}</Text>
+        <Text style={TimerStyle.buttonText}>Launch {appName}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

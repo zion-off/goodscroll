@@ -236,15 +236,64 @@ export const HomeStyle = StyleSheet.create({
     width: "90%",
     gap: 20,
   },
+  boxContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 0,
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 20,
+    marginBottom: 100,
+  },
+  googleLogin: {
+    flexGrow: 1,
+    minHeight: 100,
+    maxWidth: "60%",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: colors.matteRed,
+    justifyContent: "center",
+  },
+  loggedIn: {
+    flexGrow: 1,
+    minHeight: 100,
+    maxWidth: "60%",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: colors.green,
+    justifyContent: "center",
+  },
+  tasks: {
+    flexGrow: 1,
+    minHeight: 100,
+    maxWidth: "100%",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    justifyContent: "center",
+  },
+  googleLoginButton: {
+    fontFamily: "VioletSansRegular",
+    fontSize: 20,
+    lineHeight: 20 * 1.2,
+  },
   appContainer: {
     width: "100%",
     backgroundColor: colors.grayOne,
     paddingHorizontal: 10,
     paddingVertical: 20,
     gap: 20,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     borderRadius: 20,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   appButton: {
     padding: 10,
@@ -255,18 +304,56 @@ export const HomeStyle = StyleSheet.create({
     height: 40,
     resizeMode: "cover",
   },
+  streakContainer: {
+    borderWidth: 2,
+    borderColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    backgroundColor: colors.green,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 20,
+    marginBottom: 20,
+    gap: 20,
+  },
+  streakNumber: {
+    paddingTop: 10,
+    fontFamily: "SportingGrotesqueBold",
+    fontSize: 50,
+    color: colors.white,
+    width: "30%",
+    textAlign: "center",
+  },
+  streakText: {
+    width: "70%",
+    fontFamily: "VioletSansRegular",
+    color: colors.white,
+  },
 });
 
 export const ProfileStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+  },
+  linkContainer: {
+    width: "90%",
+    paddingVertical: 20,
+    gap: 20,
+  },
+  hello: {
+    fontFamily: "SportingGrotesqueRegular",
+    fontSize: 24,
+  },
+  link: {
+    fontFamily: "SportingGrotesqueRegular",
+    fontSize: 24,
+    textDecorationLine: "underline",
   },
   title: {
-    fontSize: 24,
-    marginBottom: 10,
+    flexDirection: "row",
   },
   subtitle: {
     fontSize: 18,
@@ -278,13 +365,9 @@ export const ProfileStyle = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    height: 40,
+    fontFamily: "SportingGrotesqueRegular",
+    fontSize: 24,
+    width: "70%",
   },
   changeEmailButton: {
     backgroundColor: "blue",
@@ -301,5 +384,68 @@ export const ProfileStyle = StyleSheet.create({
   buttonText: {
     color: "white",
     textAlign: "center",
+  },
+});
+
+export const CalendarSelectionStyle = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
+  },
+  text: {
+    width: "80%",
+    fontFamily: "VioletSansRegular",
+  },
+  calendarContainer: {
+    width: "80%",
+    gap: 10,
+  },
+  calendars: {
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: colors.grayOne,
+  },
+  selectedCalendar: {
+    borderColor: "black",
+    borderWidth: 2,
+  },
+  proceedButton: {
+    fontFamily: "SportingGrotesqueRegular",
+    position: "absolute",
+    bottom: 0,
+    padding: 30,
+    backgroundColor: colors.yellowTwo,
+    width: "100%",
+    alignItems: "center",
+  },
+});
+
+export const TimerStyle = StyleSheet.create({
+  container: {
+    height: "100%",
+    justifyContent: "center",
+  },
+  text: {
+    fontFamily: "SportingGrotesqueRegular",
+    textAlign: "center",
+  },
+  textContainer: {
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  proceedButton: {
+    fontFamily: "SportingGrotesqueRegular",
+    position: "absolute",
+    bottom: 0,
+    padding: 30,
+    backgroundColor: colors.yellowTwo,
+    width: "100%",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontFamily: "VioletSansRegular",
   },
 });

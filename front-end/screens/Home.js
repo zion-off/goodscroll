@@ -6,17 +6,19 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  Alert,
   Image,
+  View,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth, database } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import * as Linking from "expo-linking";
+import { colors } from "../styles/variables";
 
 import { HomeStyle } from "../styles/style";
+
+import { generateSuggestion } from "../functions/openAI";
 
 const Home = () => {
   const currentUser = auth.currentUser;
@@ -27,6 +29,9 @@ const Home = () => {
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [eventsList, setEventsList] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [streak, setStreak] = useState(0);
+  const [fetchedSummaries, setFetchedSummaries] = useState([]);
 
   // get list of apps from database
 
@@ -44,9 +49,25 @@ const Home = () => {
     }
   };
 
+  const getStreakCount = async () => {
+    const userDocRef = doc(database, "streak", currentUser.uid);
+    try {
+      const docSnapshot = await getDoc(userDocRef);
+      if (docSnapshot.exists()) {
+        const currentStreak = docSnapshot.data().streak || 0;
+        console.log("Current streak:", currentStreak);
+      } else {
+        console.log("Streak document doesn't exist for this user.");
+      }
+    } catch (error) {
+      console.error("Error getting streak:", error);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       getAppsList();
+      getStreakCount();
     }, [])
   );
 
@@ -62,7 +83,6 @@ const Home = () => {
     try {
       const token = loginResponse?.authentication?.accessToken;
       const refreshToken = loginResponse?.authentication?.refreshToken;
-
       if (token) {
         AsyncStorage.setItem("userToken", token);
         AsyncStorage.setItem("refreshToken", refreshToken);
@@ -90,6 +110,7 @@ const Home = () => {
       );
       const user = await response.json();
       setUserInfo(user);
+      navigation.navigate("CalendarSelection");
     } catch (error) {
       console.log("getUserInfo returned an error: ", error);
     }
@@ -113,36 +134,59 @@ const Home = () => {
     }
   };
 
-  // get all of today's events on the selected calendar
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const token = await AsyncStorage.getItem("userToken");
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-
-        const timeMin = today.toISOString();
-        const timeMax = tomorrow.toISOString();
-
-        let eventsList = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/?timeMin=${timeMin}&timeMax=${timeMax}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const response = await eventsList.json();
-        const summaries = response?.items?.map((item) => item.summary);
-        console.log("Event Summaries:", summaries);
-        setEventsList(response.items);
-      } catch (error) {
-        console.error("An error occurred: ", error);
+  const getCalendarID = async () => {
+    const userDocRef = doc(database, "calendar", currentUser.uid);
+    try {
+      const docSnapshot = await getDoc(userDocRef);
+      if (docSnapshot.exists()) {
+        setSelectedCalendarId(docSnapshot.data().selectedCalendarId);
+        console.log("Selected calendar ID", selectedCalendarId);
+      } else {
+        console.log("Could not retrieve calendar ID.");
       }
-    };
-    fetchEvents();
-  }, [selectedCalendarId]);
+    } catch (error) {
+      console.error("Error getting calendar ID:", error);
+    }
+  };
+
+  // get all of today's events on the selected calendar
+  const fetchEvents = async () => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const timeMin = today.toISOString();
+      const timeMax = tomorrow.toISOString();
+
+      console.log(selectedCalendarId);
+
+      await getCalendarID();
+
+      let eventsList = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/?timeMin=${timeMin}&timeMax=${timeMax}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      let response = await eventsList.json();
+      response = await response.items.filter(
+        (item) => item.status === "confirmed"
+      );
+      if (response) {
+        console.log(JSON.stringify(response, null, 2));
+        let summaries = await response?.map((item) => item.summary);
+        console.log("Event Summaries:", summaries);
+        setFetchedSummaries(await generateSuggestion(summaries));
+        setEventsList(response.items);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   /// test
 
@@ -221,30 +265,30 @@ const Home = () => {
     }
   };
 
+  const getRandomStrokeColor = () => {
+    // generate random number between 0 and 3
+    const randomNumber = Math.floor(Math.random() * 3);
+    if (randomNumber === 0) {
+      return colors.blueOne;
+    }
+    if (randomNumber === 1) {
+      return colors.yellowTwo;
+    }
+    if (randomNumber === 2) {
+      return colors.grayTwo;
+    }
+  };
+
   return (
     <SafeAreaView style={HomeStyle.container}>
-      <Text style={HomeStyle.title}>home page</Text>
       <ScrollView style={HomeStyle.subContainer}>
-        <Text>{JSON.stringify(userInfo, null, 2)}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Onboarding")}>
-          <Text>Navigate to onboarding page</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => loginPrompt()}>
-          <Text>Login with Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => getUsersCalendarList()}>
-          <Text>Get Calendars</Text>
-        </TouchableOpacity>
-        <Text>Calendar List:</Text>
-        {calendarsList?.map((calendar) => (
-          <TouchableOpacity
-            key={calendar.id}
-            onPress={() => setSelectedCalendarId(calendar.id)}
-            style={{ padding: 10, borderWidth: 1, marginBottom: 5 }}>
-            <Text>{calendar.summary}</Text>
-          </TouchableOpacity>
-        ))}
-        <Text>Selected Calendar ID: {selectedCalendarId}</Text>
+        <View style={HomeStyle.streakContainer}>
+          <Text style={HomeStyle.streakNumber}>{streak}</Text>
+          <Text style={HomeStyle.streakText}>
+            Number of times you closed social media apps before the timer
+            expired. Great going!
+          </Text>
+        </View>
         <SafeAreaView style={HomeStyle.appContainer}>
           {apps?.map((index) => (
             <TouchableOpacity
@@ -257,6 +301,33 @@ const Home = () => {
             </TouchableOpacity>
           ))}
         </SafeAreaView>
+        <View style={HomeStyle.boxContainer}>
+          {userInfo === null ? (
+            <TouchableOpacity
+              style={HomeStyle.googleLogin}
+              onPress={() => loginPrompt()}>
+              <Text style={HomeStyle.googleLoginButton}>
+                Login with Google to see suggested tasks!
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={HomeStyle.loggedIn} onPress={fetchEvents}>
+              <Text style={HomeStyle.googleLoginButton}>Logged in</Text>
+            </TouchableOpacity>
+          )}
+          {fetchedSummaries &&
+            fetchedSummaries.length > 0 &&
+            fetchedSummaries.map((summary, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  HomeStyle.tasks,
+                  { borderColor: getRandomStrokeColor() },
+                ]}>
+                <Text style={HomeStyle.googleLoginButton}>{summary}</Text>
+              </TouchableOpacity>
+            ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

@@ -27,6 +27,7 @@ import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Timer from "./screens/Timer";
 import Streak from "./screens/Streak";
+import CalendarSelection from "./screens/CalendarSelection";
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -148,6 +149,9 @@ export default function App() {
           name="Streak"
           component={Streak}
         />
+        <Stack.Screen options={{ headerShown: false }}
+          name="CalendarSelection"
+          component={CalendarSelection} />
         <Stack.Screen
           options={{ headerShown: false }}
           name="NavBarPages"
