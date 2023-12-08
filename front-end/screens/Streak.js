@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { auth, database } from "../firebase";
-import { collection, doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import React, { useEffect } from 'react';
+import { useNavigation } from "@react-navigation/core";
+
+import { StreakStyle } from '../styles/style';
 
 const Streak = () => {
   const currentUser = auth.currentUser;
+  const navigation = useNavigation();
 
   useEffect(() => {
     const incrementStreak = async (userId) => {
@@ -26,22 +30,13 @@ const Streak = () => {
     incrementStreak(currentUser.uid);
   }, []);
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Added to your streak!</Text>
+    <View style={StreakStyle.container}>
+      <Text style={StreakStyle.text}>Added to your streak!</Text>
+      <TouchableOpacity onPress={() => {navigation.navigate("Home")}} style={StreakStyle.button}>
+        <Text style={StreakStyle.buttonText}>Back to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
-});
 
 export default Streak;

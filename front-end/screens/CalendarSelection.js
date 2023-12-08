@@ -18,7 +18,6 @@ const CalendarSelection = ({ route }) => {
   useEffect(() => {
     const getUsersCalendarList = async () => {
       try {
-        
         let calendarsList = await fetch(
           "https://www.googleapis.com/calendar/v3/users/me/calendarList",
           {
@@ -70,13 +69,14 @@ const CalendarSelection = ({ route }) => {
         ))}
       </View>
       {selectedCalendarId !== null && (
-        <View style={CalendarSelectionStyle.proceedButton}>
+        <View style={CalendarSelectionStyle.proceedContainer}>
           <TouchableOpacity
             onPress={() => {
               const userId = currentUser.uid;
               saveSelectedCalendar(userId, selectedCalendarId);
               navigation.navigate("Home");
-            }}>
+            }}
+            style={CalendarSelectionStyle.proceedButton}>
             <Text style={CalendarSelectionStyle.appText}>Next</Text>
           </TouchableOpacity>
         </View>

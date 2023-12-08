@@ -19,6 +19,7 @@ import * as Device from "expo-device";
 import * as Notification from "expo-notifications";
 import Constants from "expo-constants";
 import {
+  cancelAllScheduledNotificationsAsync,
   scheduleNotificationAsync,
   cancelScheduledNotificationAsync,
 } from "expo-notifications";
@@ -141,8 +142,8 @@ const Timer = () => {
 
   const scheduleNotification = async (delayInMinutes) => {
     const trigger = {
-      seconds: (delayInMinutes - 5) * 60, // Convert minutes to seconds
-      channelId: "default", // Replace with your notification channel ID
+      seconds: delayInMinutes * 60,
+      channelId: "default",
     };
 
     const notificationContent = {
@@ -209,6 +210,7 @@ const Timer = () => {
       }
     }
   };
+
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
@@ -259,6 +261,7 @@ const Timer = () => {
 
         // Compare if the time difference is less than selectedMinutes
         if (timeDifferenceInMinutes < minutes) {
+          cancelAllScheduledNotificationsAsync();
           console.log("Navigating to Streak page");
           // If the notification was clicked before selectedMinutes passed, navigate to Streak page
           navigation.navigate("Streak");

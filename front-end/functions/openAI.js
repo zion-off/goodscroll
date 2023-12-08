@@ -8,19 +8,13 @@ export const generateSuggestion = async (summaries) => {
   try {
     console.log("From openAI.js: ", summaries);
 
-    const prompts = summaries.map(
-      (summary) =>
-        `Generate a task suggestion based on the title of this calendar event: "${summary}". Maximum word count of your response should be 5.`
-    );
-
-    console.log("Prompts: ", prompts);
-
-    const completionPromises = prompts.map(async (prompt) => {
+    const completionPromises = summaries.map(async (summary) => {
       try {
         const response = await axios.post(
-          "https://api.openai.com/v1/engines/davinci/completions",
+          "https://api.openai.com/v1/chat/completions",
           {
-            prompt: prompt,
+            model: "ft:gpt-3.5-turbo-0613:zion::8TRg2hLV",
+            messages: [{ role: "system", content: "Generate helpful task suggestions for users based on their calendar events and their dates. Some events can be ignored, and some can be used to generate task suggestions. User's message will always be in this format: 'Event name, Event date'. If you choose to ignore the event, just say 'ignore'. If you want to use the event to generate task suggestion, send a message with the task suggestion." }, { role: "user", content: `${summary}` }],
           },
           {
             headers: {
@@ -29,7 +23,7 @@ export const generateSuggestion = async (summaries) => {
             },
           }
         );
-        return response.data.choices[0].text.trim();
+        return response.data.choices[0].message.content;
       } catch (error) {
         console.error("Error in generating completion:", error);
         return null;

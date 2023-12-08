@@ -29,7 +29,6 @@ const Home = () => {
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [eventsList, setEventsList] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
   const [fetchedSummaries, setFetchedSummaries] = useState([]);
 
@@ -56,6 +55,7 @@ const Home = () => {
       if (docSnapshot.exists()) {
         const currentStreak = docSnapshot.data().streak || 0;
         console.log("Current streak:", currentStreak);
+        setStreak(currentStreak);
       } else {
         console.log("Streak document doesn't exist for this user.");
       }
@@ -163,7 +163,11 @@ const Home = () => {
 
       if (response) {
         console.log(JSON.stringify(response, null, 2));
-        let summaries = await response?.map((item) => item.summary);
+        let summaries = await Promise.all(
+          response.map(async (item) => {
+            return `${item.summary}, ${item.start.dateTime}.`;
+          })
+        );
         console.log("Event Summaries:", summaries);
         setFetchedSummaries(await generateSuggestion(summaries));
         setEventsList(response.items);
@@ -233,13 +237,13 @@ const Home = () => {
       return (
         <Image
           style={HomeStyle.appIcon}
-          source={require("../assets/icons/twitter.png")}></Image>
+          source={require("../assets/icons/instagram.png")}></Image>
       );
     } else if (appName === "Twitter") {
       return (
         <Image
           style={HomeStyle.appIcon}
-          source={require("../assets/icons/instagram.png")}></Image>
+          source={require("../assets/icons/twitter.png")}></Image>
       );
     } else if (appName === "TikTok") {
       return (
@@ -296,7 +300,9 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={HomeStyle.loggedIn} onPress={getCalendarID}>
+            <TouchableOpacity
+              style={HomeStyle.loggedIn}
+              onPress={getCalendarID}>
               <Text style={HomeStyle.googleLoginButton}>Logged in</Text>
             </TouchableOpacity>
           )}

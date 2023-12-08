@@ -249,8 +249,8 @@ export const HomeStyle = StyleSheet.create({
     flexGrow: 1,
     minHeight: 100,
     maxWidth: "60%",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderRadius: 20,
     alignItems: "center",
     borderWidth: 2,
@@ -261,8 +261,8 @@ export const HomeStyle = StyleSheet.create({
     flexGrow: 1,
     minHeight: 100,
     maxWidth: "60%",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderRadius: 20,
     alignItems: "center",
     borderWidth: 2,
@@ -273,8 +273,8 @@ export const HomeStyle = StyleSheet.create({
     flexGrow: 1,
     minHeight: 100,
     maxWidth: "100%",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderRadius: 20,
     alignItems: "center",
     borderWidth: 2,
@@ -282,7 +282,7 @@ export const HomeStyle = StyleSheet.create({
   },
   googleLoginButton: {
     fontFamily: "VioletSansRegular",
-    fontSize: 20,
+    fontSize: 15,
     lineHeight: 20 * 1.2,
   },
   appContainer: {
@@ -412,10 +412,13 @@ export const CalendarSelectionStyle = StyleSheet.create({
     borderColor: "black",
     borderWidth: 2,
   },
-  proceedButton: {
-    fontFamily: "SportingGrotesqueRegular",
+  proceedContainer: {
     position: "absolute",
     bottom: 0,
+    width: "100%",
+  },
+  proceedButton: {
+    fontFamily: "SportingGrotesqueRegular",
     padding: 30,
     backgroundColor: colors.yellowTwo,
     width: "100%",
@@ -444,6 +447,29 @@ export const TimerStyle = StyleSheet.create({
     backgroundColor: colors.yellowTwo,
     width: "100%",
     alignItems: "center",
+  },
+  buttonText: {
+    fontFamily: "VioletSansRegular",
+  },
+});
+
+export const StreakStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  text: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: "SportingGrotesqueRegular",
+  },
+  button: {
+    backgroundColor: colors.yellowTwo,
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   buttonText: {
     fontFamily: "VioletSansRegular",
