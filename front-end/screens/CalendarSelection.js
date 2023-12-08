@@ -7,18 +7,18 @@ import { useNavigation } from "@react-navigation/core";
 
 import { CalendarSelectionStyle } from "../styles/style";
 
-const CalendarSelection = () => {
+const CalendarSelection = ({ route }) => {
+  const { token } = route.params;
   const navigation = useNavigation();
   const [calendarsList, setCalendarsList] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const currentUser = auth.currentUser;
-  
 
   // get all the calendars the user has access to
   useEffect(() => {
     const getUsersCalendarList = async () => {
       try {
-        const token = await AsyncStorage.getItem("userToken");
+        
         let calendarsList = await fetch(
           "https://www.googleapis.com/calendar/v3/users/me/calendarList",
           {
@@ -69,7 +69,7 @@ const CalendarSelection = () => {
           </TouchableOpacity>
         ))}
       </View>
-      {selectedCalendarId !== null && selectedCalendarId.length !== null && (
+      {selectedCalendarId !== null && (
         <View style={CalendarSelectionStyle.proceedButton}>
           <TouchableOpacity
             onPress={() => {

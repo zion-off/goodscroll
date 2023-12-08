@@ -86,7 +86,7 @@ const Home = () => {
       if (token) {
         AsyncStorage.setItem("userToken", token);
         AsyncStorage.setItem("refreshToken", refreshToken);
-        getUserInfo();
+        getUserInfo(token);
       }
     } catch (error) {
       console.error("getAccessToken returned an error: ", error);
@@ -99,7 +99,7 @@ const Home = () => {
   }, [loginResponse]);
 
   // helper function to print user details to verify login
-  const getUserInfo = async () => {
+  const getUserInfo = async (token) => {
     try {
       const token = await AsyncStorage.getItem("userToken");
       const response = await fetch(
@@ -110,27 +110,9 @@ const Home = () => {
       );
       const user = await response.json();
       setUserInfo(user);
-      navigation.navigate("CalendarSelection");
+      navigation.navigate("CalendarSelection", { token });
     } catch (error) {
       console.log("getUserInfo returned an error: ", error);
-    }
-  };
-
-  // get all the calendars the user has access to
-  const getUsersCalendarList = async () => {
-    try {
-      const token = await AsyncStorage.getItem("userToken");
-      let calendarsList = await fetch(
-        "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const response = await calendarsList.json();
-      console.log(JSON.stringify(response, null, 2));
-      setCalendarsList(response.items);
-    } catch (error) {
-      console.error("An error occurred: ", error);
     }
   };
 
@@ -139,8 +121,10 @@ const Home = () => {
     try {
       const docSnapshot = await getDoc(userDocRef);
       if (docSnapshot.exists()) {
-        setSelectedCalendarId(docSnapshot.data().selectedCalendarId);
-        console.log("Selected calendar ID", selectedCalendarId);
+        const calendarId = docSnapshot.data().selectedCalendarId;
+        setSelectedCalendarId(calendarId);
+        console.log("Selected calendar ID", calendarId);
+        await fetchEvents();
       } else {
         console.log("Could not retrieve calendar ID.");
       }
@@ -157,25 +141,26 @@ const Home = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
+      tomorrow.setDate(today.getDate() + 3);
 
       const timeMin = today.toISOString();
       const timeMax = tomorrow.toISOString();
 
-      console.log(selectedCalendarId);
+      let response = [];
+      while (response.length === 0) {
+        let eventsList = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/?timeMin=${timeMin}&timeMax=${timeMax}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-      await getCalendarID();
+        response = await eventsList.json();
+        response = response?.items || [];
 
-      let eventsList = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${selectedCalendarId}/events/?timeMin=${timeMin}&timeMax=${timeMax}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      let response = await eventsList.json();
-      response = await response.items.filter(
-        (item) => item.status === "confirmed"
-      );
+        response = response.filter((item) => item.status === "confirmed");
+      }
+
       if (response) {
         console.log(JSON.stringify(response, null, 2));
         let summaries = await response?.map((item) => item.summary);
@@ -311,7 +296,7 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={HomeStyle.loggedIn} onPress={fetchEvents}>
+            <TouchableOpacity style={HomeStyle.loggedIn} onPress={getCalendarID}>
               <Text style={HomeStyle.googleLoginButton}>Logged in</Text>
             </TouchableOpacity>
           )}
