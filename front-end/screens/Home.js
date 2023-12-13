@@ -308,16 +308,19 @@ const Home = () => {
           )}
           {fetchedSummaries &&
             fetchedSummaries.length > 0 &&
-            fetchedSummaries.map((summary, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  HomeStyle.tasks,
-                  { borderColor: getRandomStrokeColor() },
-                ]}>
-                <Text style={HomeStyle.googleLoginButton}>{summary}</Text>
-              </TouchableOpacity>
-            ))}
+            fetchedSummaries.map(
+              (summary, index) =>
+                summary !== "ignore" && (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      HomeStyle.tasks,
+                      { borderColor: getRandomStrokeColor() },
+                    ]}>
+                    <Text style={HomeStyle.googleLoginButton}>{summary}</Text>
+                  </TouchableOpacity>
+                )
+            )}
         </View>
       </ScrollView>
     </SafeAreaView>

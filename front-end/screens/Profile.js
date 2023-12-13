@@ -9,7 +9,12 @@ import {
   SafeAreaView,
   Image,
 } from "react-native";
-import { getAuth, updateEmail, updatePassword } from "firebase/auth";
+import {
+  getAuth,
+  updateEmail,
+  updatePassword,
+  updateProfile,
+} from "firebase/auth";
 import { ProfileStyle } from "../styles/style";
 import { Svg, Path } from "react-native-svg";
 
@@ -31,6 +36,17 @@ const Profile = () => {
       navigation.navigate("Login");
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleChangeName = async () => {
+    const user = auth.currentUser;
+    try {
+      await updateProfile(user, newName);
+      setDisplayName(newName);
+      console.log("Display name updated successfully:", newName);
+    } catch (error) {
+      console.error("Error updating display name:", error);
     }
   };
 
@@ -59,6 +75,7 @@ const Profile = () => {
       const user = auth.currentUser;
       if (user && user.displayName) {
         setDisplayName(user.displayName);
+        setNewName(displayName);
         console.log("user's name: ", user.displayName);
       }
     };
@@ -78,7 +95,11 @@ const Profile = () => {
                 value={newName}
                 onChangeText={(text) => setNewName(text)}
               />
-              <TouchableOpacity onPress={() => setEditingName(false)}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleChangeName();
+                  setEditingName(false);
+                }}>
                 <Svg
                   width="18"
                   height="13"
