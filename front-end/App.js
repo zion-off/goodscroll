@@ -6,13 +6,13 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions } from "react-native";
 import {
   NavigationContainer,
-  useNavigationState,
   getFocusedRouteNameFromRoute,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Provider as PaperProvider } from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // custom dependencies
 import { loadFonts } from "./styles/style";
@@ -34,7 +34,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 const tabBarTheme = {
   colors: {
-    secondaryContainer: "#6482B4",
+    secondaryContainer: "#212529",
     primaryContainer: "transparent",
   },
 };
@@ -43,7 +43,7 @@ function NavBarPages({ navigation, route }) {
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
 
   const getTabBarIconColor = (tabName) => {
-    return tabName === routeName ? "white" : "#123C6E"; // Change colors as needed
+    return tabName === routeName ? "#FFB200" : "#fdf0d5"; // Change colors as needed
   };
 
   const windowWidth = Dimensions.get("window").width;
@@ -52,11 +52,12 @@ function NavBarPages({ navigation, route }) {
   return (
     <PaperProvider theme={tabBarTheme}>
       <Tab.Navigator
+        screenOptions={{ headerShown: false }}
         labeled={false}
         shifting={true}
         barStyle={{
           position: "absolute",
-          backgroundColor: "#6482B4",
+          backgroundColor: "#212529",
           height: windowHeight * 0.1,
         }}>
         <Tab.Screen
@@ -112,52 +113,23 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Welcome"
-          component={Welcome}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Register"
-          component={Register}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Onboarding"
-          component={Onboarding}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Instructions"
-          component={Instructions}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={Login}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Timer"
-          component={Timer}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Streak"
-          component={Streak}
-        />
-        <Stack.Screen options={{ headerShown: false }}
-          name="CalendarSelection"
-          component={CalendarSelection} />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="NavBarPages"
-          component={NavBarPages}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+          <Stack.Screen name="Instructions" component={Instructions} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Timer" component={Timer} />
+          <Stack.Screen name="Streak" component={Streak} />
+          <Stack.Screen
+            name="CalendarSelection"
+            component={CalendarSelection}
+          />
+          <Stack.Screen name="NavBarPages" component={NavBarPages} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

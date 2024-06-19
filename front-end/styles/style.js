@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
 import * as Font from "expo-font";
-import { colors, dimensions, text } from "./variables";
+import { colors, dimensions, text, spacing } from "./variables";
 
 const customFonts = {
   SportingGrotesqueRegular: require("../assets/fonts/SportingGrotesque-Regular.otf"),
   SportingGrotesqueBold: require("../assets/fonts/SportingGrotesque-Bold.otf"),
   VioletSansRegular: require("../assets/fonts/VioletSans-Regular.otf"),
+  ClashDisplay: require("../assets/fonts/ClashDisplay-Variable.ttf"),
 };
 
 const loadFonts = async () => {
@@ -226,36 +227,118 @@ export const LoginStyle = StyleSheet.create({
 
 export const HomeStyle = StyleSheet.create({
   container: {
+    display: "flex",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#fdf0d5",
     width: "100%",
   },
   subContainer: {
-    width: "90%",
+    display: "flex",
+    width: "100%",
+    gap: 20,
+    flexGrow: 0,
+  },
+  banner: {
+    width: "100%",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    backgroundColor: colors.yellowTwo,
+  },
+  bannerText: {
+    fontFamily: "ClashDisplay",
+    fontSize: 40,
+    paddingTop: 150,
+    fontWeight: "700",
+    color: colors.grayFour,
+  },
+  appContainer: {
+    width: "100%",
+    flexDirection: "row",
+  },
+  appName: {
+    color: colors.white,
+    fontFamily: "VioletSansRegular",
+  },
+  app: {
+    height: 40,
+    padding: 10,
+    flexBasis: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  instagram: {
+    backgroundColor: colors.matteRed,
+  },
+  twitter: {
+    backgroundColor: colors.tiktokBlue,
+  },
+  tiktok: {
+    backgroundColor: colors.xBlack,
+  },
+  streakZeroContainer: {
+    width: "100%",
+    flexDirection: "row",
+  },
+  streakZeroText: {
+    width: "50%",
+    backgroundColor: colors.grayTwo,
+    padding: 30,
+    fontFamily: "VioletSansRegular",
+    fontSize: 20,
+    textAlign: "left",
+    color: colors.white,
+  },
+  streakIcon: {
+    width: "50%",
+    backgroundColor: colors.grayFour,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  streetIconText: {
+    fontSize: 60,
+    color: colors.red,
+  },
+  streakIconImage: {
+    width: 100,
+    height: 100,
+  },
+  streakContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: colors.green,
+    padding: 20,
     gap: 20,
   },
   boxContainer: {
+    flexGrow: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    padding: 0,
+    paddingHorizontal: 20,
     justifyContent: "space-between",
     gap: 10,
-    marginTop: 20,
-    marginBottom: 100,
+    backgroundColor: "#fdf0d5",
+    paddingTop: 20,
+    paddingBottom: 100,
   },
   googleLogin: {
     flexGrow: 1,
     minHeight: 100,
-    maxWidth: "60%",
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 20,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: colors.matteRed,
+    backgroundColor: colors.matteRed,
     justifyContent: "center",
+  },
+  googleLoginButton: {
+    fontFamily: "VioletSansRegular",
+    fontSize: 15,
+    color: colors.white,
   },
   loggedIn: {
     flexGrow: 1,
@@ -280,21 +363,8 @@ export const HomeStyle = StyleSheet.create({
     borderWidth: 2,
     justifyContent: "center",
   },
-  googleLoginButton: {
-    fontFamily: "VioletSansRegular",
-    fontSize: 15,
-    lineHeight: 20 * 1.2,
-  },
-  appContainer: {
-    width: "100%",
-    backgroundColor: colors.grayOne,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-    gap: 20,
-    flexWrap: "wrap",
-    borderRadius: 20,
-    flexDirection: "row",
-  },
+
+
   appButton: {
     padding: 10,
     marginBottom: 5,
@@ -304,39 +374,13 @@ export const HomeStyle = StyleSheet.create({
     height: 40,
     resizeMode: "cover",
   },
-  streakContainer: {
-    borderWidth: 2,
-    borderColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    backgroundColor: colors.green,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderRadius: 20,
-    marginBottom: 20,
-    gap: 20,
-  },
-  streakNumber: {
-    paddingTop: 10,
-    fontFamily: "SportingGrotesqueBold",
-    fontSize: 50,
-    color: colors.white,
-    width: "30%",
-    textAlign: "center",
-  },
-  streakText: {
-    width: "70%",
-    fontFamily: "VioletSansRegular",
-    color: colors.white,
-  },
 });
 
 export const ProfileStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#fdf0d5",
   },
   linkContainer: {
     width: "90%",
@@ -456,13 +500,13 @@ export const TimerStyle = StyleSheet.create({
 export const StreakStyle = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     gap: 20,
   },
   text: {
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: "SportingGrotesqueRegular",
   },
   button: {

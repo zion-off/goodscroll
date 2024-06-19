@@ -10,7 +10,12 @@ export const colors = {
   green: "#349B51",
   grayOne: "#F5F5F5",
   grayTwo: "#A9A9A9",
-  grayThree: "#6F6F6F"
+  grayThree: "#6F6F6F",
+  grayFour: "#212529",
+  black: "#001219",
+  instagramRed: "#780000",
+  xBlack: "#010101",
+  tiktokBlue: "#1DA1F2",
 };
 
 export const dimensions = {
@@ -21,4 +26,12 @@ export const dimensions = {
 
 export const text = {
   button: 14,
+}
+
+export const spacing = {
+  small: 5,
+  medium: 10,
+  large: 15,
+  xlarge: 20,
+  xxlarge: 25,
 }
