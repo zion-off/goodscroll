@@ -245,6 +245,8 @@ export const HomeStyle = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-end",
     backgroundColor: colors.yellowTwo,
+    borderRadius: 35,
+    marginBottom: 10,
   },
   bannerText: {
     fontFamily: "ClashDisplay",
@@ -256,19 +258,22 @@ export const HomeStyle = StyleSheet.create({
   appContainer: {
     width: "100%",
     flexDirection: "row",
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   appName: {
     color: colors.white,
     fontFamily: "VioletSansRegular",
   },
   app: {
-    height: 40,
+    height: 50,
     padding: 10,
     flexBasis: 0,
     flexGrow: 1,
     flexShrink: 1,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 20,
   },
   instagram: {
     backgroundColor: colors.matteRed,
@@ -282,22 +287,28 @@ export const HomeStyle = StyleSheet.create({
   streakZeroContainer: {
     width: "100%",
     flexDirection: "row",
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   streakZeroText: {
-    width: "50%",
-    backgroundColor: colors.grayTwo,
     padding: 30,
     fontFamily: "VioletSansRegular",
     fontSize: 20,
     textAlign: "left",
     color: colors.white,
   },
+  streakZeroTextContainer: {
+    width: "50%",
+    backgroundColor: colors.grayThree,
+    borderRadius: 20,
+  },
   streakIcon: {
     width: "50%",
-    backgroundColor: colors.grayFour,
+    backgroundColor: "transparent",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 20,
   },
   streetIconText: {
     fontSize: 60,
@@ -313,7 +324,8 @@ export const HomeStyle = StyleSheet.create({
     width: "100%",
     backgroundColor: colors.green,
     padding: 20,
-    gap: 20,
+    gap: 10,
+    marginBottom: 10,
   },
   boxContainer: {
     flexGrow: 1,
@@ -323,7 +335,6 @@ export const HomeStyle = StyleSheet.create({
     justifyContent: "space-between",
     gap: 10,
     backgroundColor: "#fdf0d5",
-    paddingTop: 20,
     paddingBottom: 100,
   },
   googleLogin: {
@@ -332,8 +343,9 @@ export const HomeStyle = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     alignItems: "center",
-    backgroundColor: colors.matteRed,
+    backgroundColor: colors.grayThree,
     justifyContent: "center",
+    borderRadius: 20,
   },
   googleLoginButton: {
     fontFamily: "VioletSansRegular",
@@ -363,8 +375,6 @@ export const HomeStyle = StyleSheet.create({
     borderWidth: 2,
     justifyContent: "center",
   },
-
-
   appButton: {
     padding: 10,
     marginBottom: 5,

@@ -306,10 +306,13 @@ const Home = () => {
         </View>
       ) : (
         <View style={HomeStyle.streakZeroContainer}>
-          <Text style={HomeStyle.streakZeroText}>
-            Close a distracting app before the timer expires to start your
-            streak!
-          </Text>
+          <View style={HomeStyle.streakZeroTextContainer}>
+            <Text style={HomeStyle.streakZeroText}>
+              Close a distracting app before the timer expires to start your
+              streak!
+            </Text>
+          </View>
+
           <View style={HomeStyle.streakIcon}>
             <Image
               style={HomeStyle.streakIconImage}
@@ -321,16 +324,14 @@ const Home = () => {
       <View style={HomeStyle.boxContainer}>
         {userInfo === null ? (
           <>
-          <TouchableOpacity
-            style={HomeStyle.googleLogin}
-            onPress={() => loginPrompt()}>
-            <Text style={HomeStyle.googleLoginButton}>
-              Login with Google to see suggested tasks!
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={HomeStyle.googleLogin}
+              onPress={() => loginPrompt()}>
+              <Text style={HomeStyle.googleLoginButton}>
+                Login with Google to see suggested tasks!
+              </Text>
+            </TouchableOpacity>
           </>
-          
-          
         ) : (
           <TouchableOpacity style={HomeStyle.loggedIn} onPress={getCalendarID}>
             <Text style={HomeStyle.googleLoginButton}>Logged in</Text>
